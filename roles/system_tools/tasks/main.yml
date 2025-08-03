@@ -1,0 +1,28 @@
+---
+- name: Check existing system packages
+  command: which {{ item.binary | default(item.name | default(item)) }}
+  register: system_package_check
+  failed_when: false
+  changed_when: false
+  loop: "{{ system_packages }}"
+  when: system_tools_enabled | default(true)
+
+- name: Install system packages (only if not already installed)
+  package:
+    name: "{{ item.item.name | default(item.item) }}"
+    state: present
+  become: true
+  when: 
+    - system_tools_enabled | default(true)
+    - item.rc != 0
+  loop: "{{ system_package_check.results }}"
+
+- name: Verify system package installations
+  command: which {{ item.item.binary | default(item.item.name | default(item.item)) }}
+  register: package_verify
+  failed_when: package_verify.rc != 0
+  changed_when: false
+  loop: "{{ system_package_check.results }}"
+  when: 
+    - system_tools_enabled | default(true)
+    - item.rc != 0

@@ -1,0 +1,10 @@
+---
+# Python tools to install via uv
+python_tools:
+  - claude-monitor
+
+# uv installation method
+uv_install_script: "https://astral.sh/uv/install.sh"
+
+# Whether to add uv to PATH
+update_path: true

@@ -1,0 +1,24 @@
+---
+- name: Developer Environment Setup (Main Orchestrator)
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars: {}
+  
+  roles:
+    - ../roles/npm_tools
+    - ../roles/python_tools  
+    - ../roles/system_tools
+    - ../roles/git_config
+    - ../roles/shell_config
+
+  post_tasks:
+    - name: Final Installation Summary
+      debug:
+        msg:
+          - "=== Developer Environment Setup Complete ==="
+          - "NPM tools: {{ 'enabled' if npm_tools_enabled else 'disabled' }}"
+          - "Python tools: {{ 'enabled' if python_tools_enabled else 'disabled' }}"
+          - "System tools: {{ 'enabled' if system_tools_enabled else 'disabled' }}"
+          - "Git config: {{ 'enabled' if git_config_enabled else 'disabled' }}"
+          - "Shell config: {{ 'enabled' if shell_config_enabled else 'disabled' }}"

@@ -1,0 +1,27 @@
+---
+- name: Install Node.js repository (Ubuntu/Debian)
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_{{ nodejs_version }}.x | sudo -E bash -
+  when: ansible_os_family == "Debian"
+  become: true
+
+- name: Install Node.js (Ubuntu/Debian)
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  become: true
+
+- name: Install Node.js repository (RHEL/CentOS/Fedora)
+  shell: |
+    curl -fsSL https://rpm.nodesource.com/setup_{{ nodejs_version }}.x | sudo bash -
+  when: ansible_os_family == "RedHat"
+  become: true
+
+- name: Install Node.js (RHEL/CentOS/Fedora)
+  package:
+    name: nodejs
+    state: present
+  when: ansible_os_family == "RedHat"
+  become: true

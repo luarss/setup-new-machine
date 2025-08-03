@@ -1,0 +1,16 @@
+---
+# System packages to install
+system_packages:
+  - ripgrep
+  - curl
+  - git
+  - build-essential  # Ubuntu/Debian
+  - wget
+
+# Package mappings for different distributions
+package_mappings:
+  Debian:
+    build-essential: build-essential
+  RedHat:
+    build-essential: "Development Tools"
+    ripgrep: ripgrep

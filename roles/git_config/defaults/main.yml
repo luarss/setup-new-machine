@@ -1,0 +1,14 @@
+---
+# Git configuration settings
+git_user_name: ""
+git_user_email: ""
+
+# Common git configurations
+git_configs:
+  - { name: "push.default", value: "simple" }
+  - { name: "pull.rebase", value: "false" }
+  - { name: "init.defaultBranch", value: "main" }
+  - { name: "core.editor", value: "nano" }
+
+# Whether to prompt for user info interactively
+interactive_setup: true

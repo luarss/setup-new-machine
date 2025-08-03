@@ -1,0 +1,12 @@
+---
+# NPM tools to install
+npm_global_packages:
+  - "@anthropic-ai/claude-code"
+  - "ccsetup"
+  - "@textcortex/claude-code-sandbox"
+
+# Node.js version (will be installed if not present)
+nodejs_version: "18"
+
+# Whether to install Node.js if not present
+install_nodejs: true

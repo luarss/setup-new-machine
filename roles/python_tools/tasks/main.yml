@@ -1,0 +1,51 @@
+---
+- name: Check if uv is already installed
+  stat:
+    path: "{{ ansible_env.HOME }}/.local/bin/uv"
+  register: uv_installed
+
+- name: Install Python tools
+  block:
+    - name: Install uv package manager
+      shell: curl -LsSf https://astral.sh/uv/install.sh | sh
+      when: 
+        - item.name == "uv" 
+        - item.install_method == "curl"
+        - not uv_installed.stat.exists
+      loop: "{{ python_tools }}"
+
+    - name: Check existing uv tools
+      shell: "{{ ansible_env.HOME }}/.local/bin/uv tool list"
+      register: uv_tool_list
+      failed_when: false
+      changed_when: false
+      when: uv_installed.stat.exists
+
+    - name: Install uv tools (only if not already installed)
+      shell: "{{ ansible_env.HOME }}/.local/bin/uv tool install {{ item.package }}"
+      when: 
+        - item.install_method == "uv_tool"
+        - uv_tool_list is defined
+        - uv_tool_list.stdout is defined
+        - item.package not in uv_tool_list.stdout
+      loop: "{{ python_tools }}"
+      register: uv_tool_install
+      failed_when: uv_tool_install.rc != 0 and "already installed" not in uv_tool_install.stderr
+
+- name: Verify Python tool installations
+  block:
+    - name: Check uv installation
+      command: "{{ ansible_env.HOME }}/.local/bin/uv --version"
+      register: uv_version
+      failed_when: uv_version.rc != 0
+      changed_when: false
+      when: python_tools | selectattr('name', 'equalto', 'uv') | list | length > 0
+
+    - name: Check uv tool installations
+      command: "{{ ansible_env.HOME }}/.local/bin/{{ item.package }} --version"
+      register: tool_version
+      failed_when: tool_version.rc != 0
+      changed_when: false
+      when: item.install_method == "uv_tool"
+      loop: "{{ python_tools }}"
+  when: python_tools_enabled | default(true)

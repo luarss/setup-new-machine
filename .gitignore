@@ -1,1 +1,8 @@
 .claude
+
+# Ansible
+.log
+.retry
+
+# Secrets
+secrets.yml

@@ -1,0 +1,36 @@
+# Global configuration for all installations
+npm_tools_enabled: true
+python_tools_enabled: true
+system_tools_enabled: true
+git_config_enabled: true
+shell_config_enabled: false  # ZSH coming soon
+
+# Default npm packages (can be overridden in specific profiles)
+npm_packages:
+  - "@anthropic-ai/claude-code"
+  - "ccsetup"
+  - "@textcortex/claude-code-sandbox"
+
+# Default Python tools
+python_tools:
+  - name: "uv"
+    install_method: "curl"
+    url: "https://astral.sh/uv/install.sh"
+  - name: "claude-monitor"
+    install_method: "uv_tool"
+    package: "claude-monitor"
+
+# Default system packages
+system_packages:
+  - "ripgrep"
+
+# Git configuration defaults
+git_config:
+  interactive: true
+  default_settings:
+    - key: "pull.rebase"
+      value: "true"
+    - key: "push.default"
+      value: "simple"
+    - key: "init.defaultBranch"
+      value: "main"

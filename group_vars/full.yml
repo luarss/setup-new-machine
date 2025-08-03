@@ -1,0 +1,31 @@
+# Full development environment - all available tools
+npm_packages:
+  - "@anthropic-ai/claude-code"
+  - "ccsetup"
+  - "@textcortex/claude-code-sandbox"
+
+python_tools:
+  - name: "uv"
+    install_method: "curl"
+    url: "https://astral.sh/uv/install.sh"
+  - name: "claude-monitor"
+    install_method: "uv_tool"
+    package: "claude-monitor"
+
+system_packages:
+  - name: "ripgrep"
+    binary: "rg"
+
+git_config:
+  interactive: false
+  default_settings:
+    - key: "pull.rebase"
+      value: "true"
+    - key: "push.default"
+      value: "simple"
+    - key: "init.defaultBranch"
+      value: "main"
+    - key: "core.editor"
+      value: "vim"
+
+shell_config_enabled: true

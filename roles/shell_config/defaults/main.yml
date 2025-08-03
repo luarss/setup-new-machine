@@ -1,0 +1,14 @@
+---
+# Shell configuration
+target_shell: zsh
+install_oh_my_zsh: true
+oh_my_zsh_theme: "robbyrussell"
+
+# Oh-my-zsh plugins
+oh_my_zsh_plugins:
+  - git
+  - sudo
+  - command-not-found
+
+# Whether to set zsh as default shell
+set_default_shell: false

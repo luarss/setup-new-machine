@@ -1,0 +1,51 @@
+---
+- name: Configure shell (ZSH)
+  block:
+    - name: Check if zsh is already installed
+      command: which zsh
+      register: zsh_installed
+      failed_when: false
+      changed_when: false
+
+    - name: Install zsh (only if not already installed)
+      package:
+        name: zsh
+        state: present
+      become: true
+      when: zsh_installed.rc != 0
+
+    - name: Check if oh-my-zsh is installed
+      stat:
+        path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+      register: ohmyzsh_stat
+
+    - name: Install oh-my-zsh
+      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+      when: not ohmyzsh_stat.stat.exists
+
+    - name: Check current default shell
+      command: echo $SHELL
+      register: current_shell
+      changed_when: false
+
+    - name: Set zsh as default shell (only if not already set)
+      user:
+        name: "{{ ansible_env.USER }}"
+        shell: /bin/zsh
+      become: true
+      when: current_shell.stdout != "/bin/zsh"
+
+    - name: Check if custom .zshrc already exists
+      stat:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+      register: zshrc_exists
+
+    - name: Configure .zshrc (backup existing if present)
+      template:
+        src: zshrc.j2
+        dest: "{{ ansible_env.HOME }}/.zshrc"
+        owner: "{{ ansible_env.USER }}"
+        mode: '0644'
+        backup: yes
+      when: not zshrc_exists.stat.exists or (zshrc_exists.stat.exists and ansible_user_input_overwrite_zshrc | default(false))
+  when: shell_config_enabled | default(false)

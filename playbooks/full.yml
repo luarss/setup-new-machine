@@ -1,0 +1,26 @@
+---
+- name: Full Developer Environment Setup
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars_files:
+    - ../group_vars/full.yml
+  vars: {}
+  
+  roles:
+    - ../roles/npm_tools
+    - ../roles/python_tools
+    - ../roles/system_tools
+    - ../roles/git_config
+    - ../roles/shell_config
+
+  post_tasks:
+    - name: Installation Summary
+      debug:
+        msg:
+          - "=== Full Developer Environment Setup Complete ==="
+          - "Installed npm packages: {{ npm_packages | join(', ') }}"
+          - "Installed python tools: {{ python_tools | map(attribute='name') | join(', ') }}"
+          - "Installed system packages: {{ system_packages | join(', ') }}"
+          - "Git configuration: {{ 'interactive' if git_config.interactive else 'default settings only' }}"
+          - "Shell configuration: {{ 'ZSH with oh-my-zsh' if shell_config_enabled else 'not configured' }}"

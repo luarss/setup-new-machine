@@ -1,0 +1,47 @@
+---
+- name: Verify Developer Environment Installation
+  hosts: dev_machine
+  gather_facts: yes
+  
+  tasks:
+    - name: Check Node.js installation
+      command: node --version
+      register: node_check
+      failed_when: false
+      changed_when: false
+
+    - name: Check npm packages
+      command: npm list -g --depth=0 {{ item }}
+      register: npm_check
+      failed_when: false
+      changed_when: false
+      loop: "{{ npm_packages | default([]) }}"
+
+    - name: Check uv installation
+      command: "{{ home_dir }}/.cargo/bin/uv --version"
+      register: uv_check
+      failed_when: false
+      changed_when: false
+
+    - name: Check system packages
+      command: which {{ item }}
+      register: system_check
+      failed_when: false
+      changed_when: false
+      loop: "{{ system_packages | default([]) }}"
+
+    - name: Check git configuration
+      command: git config --global --list
+      register: git_check
+      failed_when: false
+      changed_when: false
+
+    - name: Verification Summary
+      debug:
+        msg:
+          - "=== Installation Verification Results ==="
+          - "Node.js: {{ 'installed' if node_check.rc == 0 else 'not found' }}"
+          - "NPM packages: {{ npm_check.results | selectattr('rc', 'equalto', 0) | list | length }}/{{ npm_packages | default([]) | length }} installed"
+          - "uv: {{ 'installed' if uv_check.rc == 0 else 'not found' }}"
+          - "System packages: {{ system_check.results | selectattr('rc', 'equalto', 0) | list | length }}/{{ system_packages | default([]) | length }} installed"
+          - "Git configured: {{ 'yes' if git_check.rc == 0 else 'no' }}"

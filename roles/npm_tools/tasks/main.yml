@@ -1,0 +1,45 @@
+---
+- name: Check if Node.js is installed
+  command: node --version
+  register: node_version
+  failed_when: false
+  changed_when: false
+
+- name: Install Node.js if not present
+  block:
+    - name: Add NodeSource repository
+      shell: curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+
+    - name: Install Node.js
+      package:
+        name: nodejs
+        state: present
+  when: node_version.rc != 0
+
+- name: Check existing npm packages
+  command: npm list -g --depth=0 {{ item }}
+  register: npm_check
+  failed_when: false
+  changed_when: false
+  loop: "{{ npm_packages }}"
+  when: npm_tools_enabled | default(true)
+
+- name: Install npm packages globally (only if not already installed)
+  npm:
+    name: "{{ item.item }}"
+    global: true
+    state: present
+  loop: "{{ npm_check.results }}"
+  when: 
+    - npm_tools_enabled | default(true)
+    - item.rc != 0
+
+- name: Verify npm package installations
+  command: npm list -g --depth=0 {{ item.item }}
+  register: npm_verify
+  failed_when: npm_verify.rc != 0
+  changed_when: false
+  loop: "{{ npm_check.results }}"
+  when: 
+    - npm_tools_enabled | default(true)
+    - item.rc != 0
