@@ -6,12 +6,12 @@ Create a robust, modular developer automation package using Ansible as the prima
 
 ## Objectives
 
-- [ ] Design Ansible-based role architecture for component management
-- [ ] Create Ansible playbooks for npm, python, and system tool installation
-- [ ] Implement git and shell configuration through Ansible roles
-- [ ] Build Python CLI wrapper for user interaction and profile management
+- [x] Design Ansible-based role architecture for component management ✅ 
+- [x] Create Ansible playbooks for npm, python, and system tool installation ✅
+- [x] Implement git and shell configuration through Ansible roles ✅
+- [ ] Build Python CLI wrapper for user interaction and profile management (replaced with Makefile automation)
 - [ ] Establish Molecule testing framework for role validation
-- [ ] Provide idempotent installations with comprehensive verification
+- [x] Provide idempotent installations with comprehensive verification ✅
 
 ## Architecture
 
@@ -74,45 +74,46 @@ setup-new-machine/
 - Basic CLI that can list available plugins
 - Error handling framework with transaction logging
 
-### Phase 2: Core Component Plugins (Weeks 3-4)
-**NPM Tools Plugin**
-- Install Node.js if not present (via NodeSource repository)
-- Install global npm packages: Claude Code, CCSetup, Claude Code Sandbox
-- Verify installations and report versions
+### Phase 2: Core Component Plugins (Weeks 3-4) ✅ COMPLETED
+**NPM Tools Plugin** ✅
+- ✅ Install global npm packages: Claude Code, CCSetup, Claude Code Sandbox
+- ✅ Verify installations and report versions
+- ✅ Intelligent overwrite protection
 
-**Python Tools Plugin**
-- Install uv package manager via curl script
-- Verify installation and functionality
-- Handle PATH modifications if needed
+**Python Tools Plugin** ✅
+- ✅ Install uv package manager via curl script  
+- ✅ Install claude-monitor via uv tool
+- ✅ Verify installation and functionality
+- ✅ Simplified PATH handling
 
-**System Tools Plugin**
-- Install ripgrep via package manager (apt/yum/pacman detection)
-- Handle different Linux distributions
-- Verify binary availability
+**System Tools Plugin** ✅
+- ✅ Install ripgrep via package manager with intelligent checks
+- ✅ Handle different package names vs binary names
+- ✅ Verify binary availability
 
-**Deliverables:**
-- Three working plugins with installation and verification
-- Cross-distribution package manager detection
-- Installation progress reporting
+**Deliverables:** ✅
+- ✅ Three working Ansible roles with installation and verification
+- ✅ Cross-distribution package manager detection
+- ✅ Intelligent overwrite protection for existing installations
 
-### Phase 3: Configuration Management (Weeks 5-6)
-**Git Configuration Plugin**
-- Interactive prompts for user.name and user.email
-- Configure common git settings (push.default, pull.rebase, etc.)
-- SSH key generation and configuration (optional)
-- GPG signing setup (optional)
+### Phase 3: Configuration Management (Weeks 5-6) ✅ COMPLETED
+**Git Configuration Plugin** ✅
+- ✅ Non-interactive configuration via secrets.yml file
+- ✅ Configure common git settings (push.default, pull.rebase, etc.)
+- ✅ SSH key generation and configuration with proper user permissions
+- ✅ Secrets file ignored by git for privacy
 
-**Shell Configuration Plugin (ZSH)**
-- Install zsh if not present
-- Install oh-my-zsh framework
-- Configure basic plugins and theme
-- Set as default shell
-- Handle existing shell configurations
+**Shell Configuration Plugin (ZSH)** ✅
+- ✅ Install zsh if not present with intelligent checking
+- ✅ Install oh-my-zsh framework
+- ✅ Configure basic plugins and theme
+- ✅ Set as default shell with proper privilege escalation
+- ✅ Handle existing shell configurations
 
-**Deliverables:**
-- Git configuration with interactive setup
-- ZSH installation and configuration
-- User preference handling for optional features
+**Deliverables:** ✅
+- ✅ Git configuration with hardcoded secrets system
+- ✅ ZSH installation and configuration with privilege fixes
+- ✅ Non-interactive setup optimized for localhost execution
 
 ### Phase 4: Advanced Features (Weeks 7-8)
 **Error Handling & Rollback**

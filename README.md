@@ -35,6 +35,7 @@ make verify
 **Git Configuration**
 - Global git settings (user.name, user.email, pull.rebase, etc.)
 - SSH key generation and configuration
+- Uses hardcoded configuration from `secrets.yml` (see Configuration section)
 
 **Shell Configuration** 
 - ZSH with oh-my-zsh framework (optional, in full installation)
@@ -50,36 +51,38 @@ make verify             # Check what's currently installed
 make check              # Dry run - see what would be installed
 ```
 
-### Component-Specific Installation
-
-```bash
-make install-npm        # Just npm tools
-make install-python     # Just python tools  
-make install-system     # Just system packages
-make install-git        # Just git configuration
-make install-shell      # Just shell configuration
-```
-
 ### Direct Ansible Commands
 
 ```bash
-# Change to ansible directory
-cd ansible
-
-# Run specific playbooks
+# Run main installation playbook
 ansible-playbook playbooks/full.yml
-ansible-playbook playbooks/verify.yml
 
-# Custom configuration
-ansible-playbook playbooks/site.yml -e "npm_packages=['@anthropic-ai/claude-code']"
+# Run verification playbook
+ansible-playbook playbooks/verify.yml
 ```
 
 ## Configuration
 
-Customize installations by editing files in `ansible/group_vars/`:
+### Personal Information Setup
 
-- `all.yml` - Global defaults
-- `full.yml` - Complete installation profile
+Create a `secrets.yml` file (automatically ignored by git) with your personal information:
+
+```yaml
+git_user:
+  name: "Your Name"
+  email: "your.email@example.com"
+
+ssh_key:
+  comment: "your.email@example.com"
+  type: "rsa"
+  size: 4096
+```
+
+### Component Configuration
+
+Customize installations by editing files in `group_vars/`:
+
+- `full.yml` - Complete installation profile with all components
 
 ## Requirements
 
@@ -91,24 +94,28 @@ Customize installations by editing files in `ansible/group_vars/`:
 ## Architecture
 
 ```
-ansible/
+.
 ├── ansible.cfg           # Ansible configuration
-├── inventory/           
-│   └── localhost.yml     # Local machine inventory
-├── group_vars/          # Variable definitions by profile
-├── playbooks/           # Main orchestration playbooks
-└── roles/               # Component-specific roles
-    ├── npm_tools/       # NPM package management
-    ├── python_tools/    # Python ecosystem setup
-    ├── system_tools/    # System package installation
-    ├── git_config/      # Git configuration
-    └── shell_config/    # Shell setup (ZSH)
+├── secrets.yml           # Personal configuration (git ignored)
+├── group_vars/          
+│   └── full.yml          # Complete installation profile
+├── playbooks/           
+│   ├── full.yml          # Main orchestration playbook
+│   └── site.yml          # Base playbook
+├── roles/               # Component-specific roles
+│   ├── npm_tools/       # NPM package management
+│   ├── python_tools/    # Python ecosystem setup (uv, claude-monitor)
+│   ├── system_tools/    # System package installation (ripgrep)
+│   ├── git_config/      # Git configuration with SSH keys
+│   └── shell_config/    # Shell setup (ZSH with oh-my-zsh)
+└── Makefile             # Simplified automation commands
 ```
 
 ## Features
 
-- **Idempotent**: Safe to run multiple times
-- **Cross-platform**: Works on Debian, Ubuntu, CentOS, RHEL
+- **Idempotent**: Safe to run multiple times, intelligent overwrite protection
+- **Cross-platform**: Works on Debian, Ubuntu, CentOS, RHEL  
 - **Modular**: Install only what you need
 - **Verification**: Built-in installation checking
-- **Interactive**: Prompts for git user configuration
+- **Non-interactive**: Uses hardcoded configuration from secrets file
+- **Localhost-only**: Optimized for local machine setup
